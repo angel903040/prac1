@@ -1,0 +1,64 @@
+Prac1
+
+R1-G0/0  
+   S0/1/0
+
+R2-S0/1/0
+   S0/1/1
+
+R3-S0/1/0
+   G0/0
+
+cli R1,R2,R3
+>en
+conf t
+Line vty 0 4
+password vtypa55
+login
+exit
+enable secret enpa55
+
+now config ospf on all routers
+router 1
+#router ospf 1
+network 192.168.1.0 0.0.0.255 area 0
+network 10.1.1.0 0.0.0.3 area 0
+router 2
+#router ospf 2
+network 10.1.1.0 0.0.0.3 area 0
+network 10.2.2.0 0.0.0.3 area 0
+router 3
+#router ospf 3
+network 192.168.3.0 0.0.0.255 area 0
+network 10.2.2.0 0.0.0.3 area 0
+
+Open cmd 
+s1 ping 192.168.3.5
+s2 ping 192.168.3.5
+s3 ping 192.168.1.5 or ping 192.168.1.6
+
+paste same in all router cli 
+R1(config)#router ospf 1
+R1(config-router)# area 0 authentication message-digest
+                  exit
+paste  again in all router cli
+R1(config)#interface s0/1/0
+R1(config-if)# ip ospf message-digest-key 1 md5 MD5pa55
+
+R2(config)#interface s0/1/0
+R2(config-if)# ip ospf message-digest-key 1 md5 MD5pa55
+exit
+R2(config)#interface s0/1/1
+R2(config-if)# ip ospf message-digest-key 1 md5 MD5pa55
+
+R3(config)#interface s0/1/0
+R3(config-if)# ip ospf message-digest-key 1 md5 MD5pa55
+exit
+
+verify
+
+R1#show ip ospf interface
+R2#show ip ospf interface
+R3#show ip ospf interface
+
+
